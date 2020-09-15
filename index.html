@@ -1,0 +1,371 @@
+<!DOCTYPE HTML>
+<!--
+	Read Only by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+	Pinwheel from:https://code.sololearn.com/WD8GprR5hozY/#html
+-->
+<html>
+	<style type="text/css">
+
+#buttons {
+		margin-left: 150px;
+	  }
+
+		text{
+			font-family:Helvetica, Arial, sans-serif;
+			font-size:11px;
+			pointer-events:none;
+		}
+
+	#chart{
+        width:500px;
+        height:500px;
+        left:0;
+    }
+	#question{
+        position: absolute;
+        width:350px;
+        height:500px;
+		left:625px;
+		top: 160%;
+    }
+    #question h1{
+        font-size: 30px;
+        font-weight: bold;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        top:50%;
+        -webkit-transform:translate(0,-40%);
+                transform:translate(0,-40%);
+    }
+		</style>
+		
+
+
+
+	<head>
+		<link rel="icon" href="images/banner.jpg">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+			<link rel="stylesheet" href="assets/css/main.css" />
+
+		<title>Q-Minds </title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<section id="header">
+				<header>
+					<span class="image avatar"><img src="images/avatar.jpg" alt="" /></span>
+					<h1 id="logo"><a href="#">Sarah Paul - 110 &#9734;</a></h1>
+					<p>Sarah is an amazing person <br />
+					who will learn by doing great things during quarantine.</p>
+				</header>
+				<nav id="nav">
+					<ul>
+						<li><a href="#one" class="active">About</a></li>
+						<li><a href="#two">For today</a></li>
+						<li><a href="#three">Friends</a></li>
+						<li><a href="#four">Past Accomplishments</a></li>
+					</ul>
+				</nav>
+				<footer>
+					<p><a href="">Logout</a></p>
+				</footer>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- One -->
+							<section id="one">
+								<div class="image main" data-position="center">
+									<img src="images/banner.jpg" alt="" />
+								</div>
+								<div class="container">
+									<header class="major">
+										<h2>Q-Minds</h2>
+										<p>Create a healthy lifestyle while <i>staying home & staying safe.</i> <br />
+										Spin the wheel below to get ideas for activities during Quarantine. <br> Show case your
+									achievements, make friends, and thrive.&#10084;</p>
+									</header>
+									<p>Instructions: <br> 1. Spin the pinwheel below to get an activity <br> 2. You have 24 hours to complete your task
+									<br> 3. After completion, check the box below
+							<br> Congrats! You are one step closer to a healthier Quranatine.</p>
+								</div>
+							</section>
+
+
+
+						<!-- Pinwheel -->
+						<section id="two">
+							<div class="container">
+
+								<div id="chart"></div>
+								<div id="question"><h1></h1></div>
+								
+								<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+								<script type="text/javascript" charset="utf-8">
+									var padding = {top:20, right:40, bottom:0, left:0},
+										w = 500 - padding.left - padding.right,
+										h = 500 - padding.top  - padding.bottom,
+										r = Math.min(w, h)/2,
+										rotation = 0,
+										oldrotation = 0,
+										picked = 100000,
+										oldpick = [],
+										color = d3.scale.category20();//category20c()
+									var data = [
+												{"label":"Yoga",  "value":1,  "question":"Perform yoga for at least 15 minutes"}, 
+												{"label":"New Friend",  "value":1,  "question":"Make a new friend online!"}, 
+												{"label":"Exercise",  "value":1,  "question":"Sign up for an exercise routine"}, 
+												{"label":"Bake",  "value":1,  "question":"Try to bake a cookie! Follow any recipe online"}, 
+												{"label":"Read",  "value":1,  "question":"Read a chapter from your favorite book"}, 
+												{"label":"Watch",  "value":1,  "question":"Watch a Disney movie from your childhood"}, 
+												{"label":"Old Friend",  "value":1,  "question":"Call/text an old friend. Tell them about Q-Minds!"}, 
+												{"label":"Music",  "value":1,  "question":"Listen to some soothing music from your favorite artist"}, 
+												{"label":"Volunteer",  "value":1,  "question":"Volunteer with a social impact organization virtually"}, 
+												{"label":"Help", "value":1, "question":"Help someone today with anything"}, 
+												{"label":"Sew", "value":1, "question":"Try to sew a cloth mask for yourself"}, 
+												{"label":"Chill", "value":1, "question":"Sit on the rooftop and feel the breeze"}, 
+												{"label":"Arrange", "value":1, "question":"Arrange and organize your room"}, 
+												{"label":"Write", "value":1, "question":"Write down 5 things you are grateful for"},
+												{"label":"Draw", "value":1, "question":"Paint or sketch anything you love!"}
+										
+											
+									];
+									var svg = d3.select('#chart')
+										.append("svg")
+										.data([data])
+										.attr("width",  w + padding.left + padding.right)
+										.attr("height", h + padding.top + padding.bottom);
+									var container = svg.append("g")
+										.attr("class", "chartholder")
+										.attr("transform", "translate(" + (w/2 + padding.left) + "," + (h/2 + padding.top) + ")");
+									var vis = container
+										.append("g");
+										
+									var pie = d3.layout.pie().sort(null).value(function(d){return 1;});
+									// declare an arc generator function
+									var arc = d3.svg.arc().outerRadius(r);
+									// select paths, use arc generator to draw
+									var arcs = vis.selectAll("g.slice")
+										.data(pie)
+										.enter()
+										.append("g")
+										.attr("class", "slice");
+										
+									arcs.append("path")
+										.attr("fill", function(d, i){ return color(i); })
+										.attr("d", function (d) { return arc(d); });
+									// add the text
+									arcs.append("text").attr("transform", function(d){
+											d.innerRadius = 0;
+											d.outerRadius = r;
+											d.angle = (d.startAngle + d.endAngle)/2;
+											return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")translate(" + (d.outerRadius -10) +")";
+										})
+										.attr("text-anchor", "end")
+										.text( function(d, i) {
+											return data[i].label;
+										});
+									container.on("click", spin);
+									function spin(d){
+										
+										container.on("click", null);
+										//all slices have been seen, all done
+										console.log("OldPick: " + oldpick.length, "Data length: " + data.length);
+										if(oldpick.length == data.length){
+											console.log("done");
+											container.on("click", null);
+											return;
+										}
+										var  ps       = 360/data.length,
+											 pieslice = Math.round(1440/data.length),
+											 rng      = Math.floor((Math.random() * 1440) + 360);
+											
+										rotation = (Math.round(rng / ps) * ps);
+										
+										picked = Math.round(data.length - (rotation % 360)/ps);
+										picked = picked >= data.length ? (picked % data.length) : picked;
+										if(oldpick.indexOf(picked) !== -1){
+											d3.select(this).call(spin);
+											return;
+										} else {
+											oldpick.push(picked);
+										}
+										rotation += 90 - Math.round(ps/2);
+										vis.transition()
+											.duration(3000)
+											.attrTween("transform", rotTween)
+											.each("end", function(){
+												//mark question as seen
+												d3.select(".slice:nth-child(" + (picked + 1) + ") path")
+													.attr("fill", "#111");
+												//populate question
+												d3.select("#question h1")
+													.text(data[picked].question);
+												oldrotation = rotation;
+											
+												container.on("click", spin);
+											});
+									}
+									//make arrow
+									svg.append("g")
+										.attr("transform", "translate(" + (w + padding.left + padding.right) + "," + ((h/2)+padding.top) + ")")
+										.append("path")
+										.attr("d", "M-" + (r*.15) + ",0L0," + (r*.05) + "L0,-" + (r*.05) + "Z")
+										.style({"fill":"black"});
+									//draw spin circle
+									container.append("circle")
+										.attr("cx", 0)
+										.attr("cy", 0)
+										.attr("r", 60)
+										.style({"fill":"white","cursor":"pointer"});
+									//spin text
+									container.append("text")
+										.attr("x", 0)
+										.attr("y", 15)
+										.attr("text-anchor", "middle")
+										.text("SPIN")
+										.style({"font-weight":"bold", "font-size":"30px"});
+									
+									
+									function rotTween(to) {
+									  var i = d3.interpolate(oldrotation % 360, rotation);
+									  return function(t) {
+										return "rotate(" + i(t) + ")";
+									  };
+									}
+									
+									
+									function getRandomNumbers(){
+										var array = new Uint16Array(1000);
+										var scale = d3.scale.linear().range([360, 1440]).domain([0, 100000]);
+										if(window.hasOwnProperty("crypto") && typeof window.crypto.getRandomValues === "function"){
+											window.crypto.getRandomValues(array);
+											console.log("works");
+										} else {
+											//no support for crypto, get crappy random numbers
+											for(var i=0; i < 1000; i++){
+												array[i] = Math.floor(Math.random() * 100000) + 1;
+											}
+										}
+										return array;
+									}
+								</script>
+								<br>
+								<br>
+<div id ="buttons">
+<ul class="actions">
+	<li><a href="#four"><input type="submit" class="primary" value="Yay, I finished my task!!" /></a></li>
+	<li><input type="reset" value="Maybe next time :)" /></li>
+</ul>
+<div>
+
+
+							</div>
+						</section>
+
+
+						<!-- Two 
+							<section id="two">
+								<div class="container">
+									<h3>Things I Can Do</h3>
+									<p>Integer eu ante ornare amet commetus vestibulum blandit integer in curae ac faucibus integer non. Adipiscing cubilia elementum integer lorem ipsum dolor sit amet.</p>
+									<ul class="feature-icons">
+										<li class="icon solid fa-code">Write all the code</li>
+										<li class="icon solid fa-cubes">Stack small boxes</li>
+										<li class="icon solid fa-book">Read books and stuff</li>
+										<li class="icon solid fa-coffee">Drink much coffee</li>
+										<li class="icon solid fa-bolt">Lightning bolt</li>
+										<li class="icon solid fa-users">Shadow clone technique</li>
+									</ul>
+								</div>
+							</section>
+							-->
+
+						<!-- Three -->
+							<section id="three">
+								<div class="container">
+									<h3> See what your friends have been upto!</h3>
+									<p>Below you will find what you best friends did today to make their Q-Minds healthier.</p>
+									<div class="features">
+										<article>
+											<a href="#" class="image"><img src="images/pic01.jpg" alt="" /></a>
+											<div class="inner">
+												<h4>Eleanor Harris</h4>
+												<p>Eleanor volunteered at an online school for 2 hours today!</p>
+											</div>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic02.jpg" alt="" /></a>
+											<div class="inner">
+												<h4>Andrew Scott</h4>
+												<p>Andrew just started reading a new book.</p>
+											</div>
+										</article>
+										<article>
+											<a href="#" class="image"><img src="images/pic03.jpg" alt="" /></a>
+											<div class="inner">
+												<h4>Sophie Hall</h4>
+												<p>Sophie did yoga today!</p>
+											</div>
+										</article>
+									</div>
+								</div>
+							</section>
+
+						<!-- Four -->
+							<section id="four">
+								<div class="container">
+									<h3>Your Past Accomplishments - Keep up the good work Sarah!</h3>
+									<ul>
+										<li> 1 September 2020: You completed an online course. &#9734;&#9734;</li>
+										<li> 2 September 2020: You went on a little trip to get items for cleaning. &#9734;</li>
+										<li> 3 September 2020: You completed 100 pushups!&#9734;&#9734;&#9734; </li>
+										<li> 4 September 2020: You listened to an old song from highschool.&#9734; </li>
+										<li> 5 September 2020: You tried vegan food!! &#9734;</li>
+										<li> 6 September 2020: You finished reading a chapter from your favorite book. &#9734;&#9734;</li>
+				
+									</ul>	
+									<h4> GREAT JOB SARAH! Let's add your accomplishment stars for <a href="#two" ><u>today.</u></a></h4>								
+												
+											
+								</div>
+							</section>
+
+						
+
+					</div>
+
+				<!-- Footer -->
+					<section id="footer">
+						<div class="container">
+							<!--<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul> -->
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
